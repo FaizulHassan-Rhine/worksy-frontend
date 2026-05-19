@@ -1,0 +1,17 @@
+export const ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  DASHBOARD: '/dashboard',
+  DAILY_TASKS: '/daily-tasks',
+  PROJECTS: '/projects',
+  TASKS: '/tasks',
+  NOTES: '/notes',
+  FILES: '/files',
+  TEAM: '/team',
+  CHAT: '/chat',
+  SETTINGS: '/settings',
+  projectChat: (projectId) => `/chat?project=${projectId}`,
+  projectDetail: (id) => `/projects/${id}`,
+  noteDetail: (id) => `/notes/${id}`,
+};
