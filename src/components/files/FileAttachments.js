@@ -5,6 +5,7 @@ import Spinner from '@/components/ui/Spinner';
 import FileCard from '@/components/files/FileCard';
 import UploadFileZone from '@/components/files/UploadFileZone';
 import fileService from '@/services/fileService';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function FileAttachments({
   workspaceId,
@@ -13,6 +14,7 @@ export default function FileAttachments({
   title = 'Attachments',
   compact = false,
 }) {
+  const { confirm } = useDialog();
   const [files, setFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,7 +49,11 @@ export default function FileAttachments({
   };
 
   const handleDelete = async (fileId) => {
-    const confirmed = window.confirm('Delete this file?');
+    const confirmed = await confirm({
+      title: 'Delete file',
+      description: 'Delete this file?',
+      confirmText: 'Delete',
+    });
     if (!confirmed) return;
 
     await fileService.delete(fileId);

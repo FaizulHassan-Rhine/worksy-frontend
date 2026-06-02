@@ -12,6 +12,7 @@ import Label from '@/components/ui/Label';
 import Badge from '@/components/ui/Badge';
 import { useWorkspace } from '@/hooks/useWorkspace';
 import { useAuth } from '@/hooks/useAuth';
+import { useDialog } from '@/hooks/useDialog';
 
 const renameSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
@@ -20,6 +21,7 @@ const renameSchema = z.object({
 export default function SettingsPage() {
   const { user } = useAuth();
   const { activeWorkspace, updateWorkspace, deleteWorkspace } = useWorkspace();
+  const { confirm } = useDialog();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -47,9 +49,11 @@ export default function SettingsPage() {
   const onDelete = async () => {
     if (!activeWorkspace || activeWorkspace.type === 'personal') return;
 
-    const confirmed = window.confirm(
-      `Delete "${activeWorkspace.name}"? This cannot be undone.`
-    );
+    const confirmed = await confirm({
+      title: 'Delete workspace',
+      description: `Delete "${activeWorkspace.name}"? This cannot be undone.`,
+      confirmText: 'Delete',
+    });
     if (!confirmed) return;
 
     setMessage('');
@@ -64,14 +68,14 @@ export default function SettingsPage() {
 
   if (!activeWorkspace) {
     return (
-      <div className="mx-auto max-w-2xl">
+      <div className="ml-2 mr-auto w-full max-w-[1400px] sm:ml-3">
         <p className="text-sm text-zinc-500">No workspace selected.</p>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-6 sm:ml-3">
       <div>
         <h1 className="text-lg font-semibold text-zinc-900">Settings</h1>
         <p className="mt-0.5 text-xs text-zinc-500">Manage your account and workspace</p>

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import ToastContainer from '@/components/ui/Toast';
+import { DialogProvider } from '@/components/providers/DialogProvider';
 import { LEGACY_STORAGE_KEYS, STORAGE_KEYS } from '@/constants/branding';
 import { useThemeStore } from '@/store/themeStore';
 
@@ -25,9 +26,9 @@ export default function AppProviders({ children }) {
   }, [initTheme]);
 
   return (
-    <>
+    <DialogProvider>
       {children}
       <ToastContainer />
-    </>
+    </DialogProvider>
   );
 }

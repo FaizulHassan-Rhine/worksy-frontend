@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/useToast';
 import workspaceService from '@/services/workspaceService';
 import FileAttachments from '@/components/files/FileAttachments';
 import { cn } from '@/lib/utils';
+import { useDialog } from '@/hooks/useDialog';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
@@ -29,6 +30,7 @@ const schema = z.object({
 
 export default function TaskDrawer({ taskId, open, onClose, workspaceId, onUpdated, onDeleted }) {
   const { success, error: toastError } = useToast();
+  const { confirm } = useDialog();
   const [task, setTask] = useState(null);
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +105,11 @@ export default function TaskDrawer({ taskId, open, onClose, workspaceId, onUpdat
   };
 
   const onDelete = async () => {
-    const confirmed = window.confirm(`Delete "${task?.title}"?`);
+    const confirmed = await confirm({
+      title: 'Delete task',
+      description: `Delete "${task?.title}"?`,
+      confirmText: 'Delete',
+    });
     if (!confirmed) return;
 
     try {

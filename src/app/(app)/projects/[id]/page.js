@@ -28,6 +28,7 @@ import projectService from '@/services/projectService';
 import taskService from '@/services/taskService';
 import Select from '@/components/ui/Select';
 import { cn } from '@/lib/utils';
+import { useDialog } from '@/hooks/useDialog';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required').max(150),
@@ -40,6 +41,7 @@ const schema = z.object({
 export default function ProjectDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { confirm } = useDialog();
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [taskView, setTaskView] = useState('kanban');
@@ -152,7 +154,11 @@ export default function ProjectDetailPage() {
   };
 
   const onDelete = async () => {
-    const confirmed = window.confirm(`Delete "${project?.title}"? This cannot be undone.`);
+    const confirmed = await confirm({
+      title: 'Delete project',
+      description: `Delete "${project?.title}"? This cannot be undone.`,
+      confirmText: 'Delete',
+    });
     if (!confirmed) return;
 
     try {
@@ -193,7 +199,7 @@ export default function ProjectDetailPage() {
 
   if (error && !project) {
     return (
-      <div className="mx-auto max-w-2xl space-y-4">
+      <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-4 sm:ml-3">
         <Link
           href={ROUTES.PROJECTS}
           className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900"
@@ -209,7 +215,7 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6">
+    <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-6 sm:ml-3">
       <Link
         href={ROUTES.PROJECTS}
         className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-900"

@@ -13,10 +13,12 @@ import { getNoteTypeColor, getNoteTypeLabel } from '@/constants/note';
 import { ROUTES } from '@/constants/routes';
 import noteService from '@/services/noteService';
 import { cn } from '@/lib/utils';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function NoteDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { confirm } = useDialog();
   const [note, setNote] = useState(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -71,7 +73,11 @@ export default function NoteDetailPage() {
   };
 
   const onDelete = async () => {
-    const confirmed = window.confirm(`Delete "${note?.title}"?`);
+    const confirmed = await confirm({
+      title: 'Delete note',
+      description: `Delete "${note?.title}"?`,
+      confirmText: 'Delete',
+    });
     if (!confirmed) return;
 
     try {
@@ -92,7 +98,7 @@ export default function NoteDetailPage() {
 
   if (error && !note) {
     return (
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-4 sm:ml-3">
         <Link
           href={ROUTES.NOTES}
           className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900"
@@ -108,7 +114,7 @@ export default function NoteDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-6 sm:ml-3">
       <Link
         href={ROUTES.NOTES}
         className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-900"

@@ -13,9 +13,11 @@ import { useWorkspace } from '@/hooks/useWorkspace';
 import { useAuth } from '@/hooks/useAuth';
 import workspaceService from '@/services/workspaceService';
 import { useToast } from '@/hooks/useToast';
+import { useDialog } from '@/hooks/useDialog';
 
 export default function TeamPage() {
   const { success, error: toastError } = useToast();
+  const { confirm } = useDialog();
   const { user } = useAuth();
   const { activeWorkspace, activeWorkspaceId } = useWorkspace();
   const [members, setMembers] = useState([]);
@@ -75,7 +77,11 @@ export default function TeamPage() {
   };
 
   const handleRemove = async (memberId) => {
-    const confirmed = window.confirm('Remove this member from the workspace?');
+    const confirmed = await confirm({
+      title: 'Remove member',
+      description: 'Remove this member from the workspace?',
+      confirmText: 'Remove',
+    });
     if (!confirmed) return;
 
     try {
@@ -89,7 +95,7 @@ export default function TeamPage() {
 
   if (!activeWorkspace) {
     return (
-      <div className="mx-auto max-w-3xl">
+      <div className="ml-2 mr-auto w-full max-w-[1400px] sm:ml-3">
         <EmptyState
           icon={Users}
           title="No workspace selected"
@@ -101,7 +107,7 @@ export default function TeamPage() {
 
   if (!isTeamWorkspace) {
     return (
-      <div className="mx-auto max-w-3xl space-y-6">
+      <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-6 sm:ml-3">
         <div>
           <h1 className="text-lg font-semibold text-zinc-900">Team</h1>
           <p className="mt-0.5 text-xs text-zinc-500">
@@ -134,7 +140,7 @@ export default function TeamPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="ml-2 mr-auto w-full max-w-[1400px] space-y-6 sm:ml-3">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-lg font-semibold text-zinc-900">Team</h1>
